@@ -71,6 +71,9 @@ export interface GameRoom {
   handResult: HandResult | null;
 
   score: [number, number]; // wins across hands
+
+  // Seat assignments set by host before game starts: playerId -> seat (0-3)
+  seatAssignments: Record<string, number>;
 }
 
 const SUITS: Suit[] = ['S', 'H', 'D', 'C'];

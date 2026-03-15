@@ -148,6 +148,15 @@ export default function RoomPage() {
     }
   };
 
+  const handleAssignSeats = async (assignments: Record<string, number>) => {
+    if (!code || !playerInfo) return;
+    await fetch('/api/assign-seats', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code, playerId: playerInfo.playerId, assignments }),
+    });
+  };
+
   const handleNewHand = async () => {
     if (!code || !playerInfo) return;
     const res = await fetch('/api/new-hand', {
@@ -162,8 +171,21 @@ export default function RoomPage() {
     }
   };
 
-  // Check if current player is host (seat 0)
-  const isHost = playerInfo?.seat === 0;
+  // Sync playerInfo.seat when game starts (seat assignments may have changed)
+  useEffect(() => {
+    if (!gameState || !playerInfo || !code) return;
+    if (gameState.status === 'playing') {
+      const me = gameState.players.find((p) => p.id === playerInfo.playerId);
+      if (me && me.seat !== playerInfo.seat) {
+        const updated = { ...playerInfo, seat: me.seat };
+        localStorage.setItem(`mendikot_player_${code}`, JSON.stringify(updated));
+        setPlayerInfo(updated);
+      }
+    }
+  }, [gameState?.status]);
+
+  // Check if current player is the room host by playerId
+  const isHost = !!playerInfo && !!gameState && playerInfo.playerId === gameState.hostId;
 
   // Loading state
   if (loadError) {
@@ -256,7 +278,10 @@ export default function RoomPage() {
           players={gameState.players}
           isHost={isHost}
           myName={playerInfo.name}
+          myPlayerId={playerInfo.playerId}
+          seatAssignments={gameState.seatAssignments ?? {}}
           onStartGame={handleStartGame}
+          onAssignSeats={handleAssignSeats}
         />
         {lastError && (
           <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg">

@@ -23,6 +23,7 @@ export function createRoom(code: string, hostId: string): GameRoom {
     lastTrick: null,
     handResult: null,
     score: [0, 0],
+    seatAssignments: {},
   };
   rooms.set(code, room);
   return room;

@@ -38,6 +38,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   };
 
   room.players.push(host);
+  room.seatAssignments[hostId] = 0;
   setRoom(code, room);
 
   return res.status(200).json({ code, playerId: hostId, seat: 0 });

@@ -6,6 +6,7 @@ import Sidebar from './Sidebar';
 
 export interface RoomState {
   code: string;
+  hostId: string;
   players: Player[];
   status: 'waiting' | 'playing' | 'hand_complete';
   hands: Record<number, Card[]>;
@@ -20,6 +21,7 @@ export interface RoomState {
   lastTrick: CompletedTrick | null;
   handResult: HandResult | null;
   score: [number, number];
+  seatAssignments: Record<string, number>;
 }
 
 interface GameBoardProps {
