@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getRoom, setRoom } from '@/lib/gameStore';
 import { Player } from '@/lib/gameLogic';
-import { getPusher } from '@/lib/pusher';
 
 export const config = { api: { bodyParser: true } };
 
@@ -9,7 +8,7 @@ function generateId(): string {
   return Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -58,12 +57,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   room.players.push(player);
   setRoom(code.toUpperCase(), room);
-
-  // Notify other players
-  const pusher = getPusher();
-  await pusher.trigger(`room-${room.code}`, 'player-joined', {
-    players: room.players,
-  });
 
   return res.status(200).json({ playerId, seat, players: room.players });
 }

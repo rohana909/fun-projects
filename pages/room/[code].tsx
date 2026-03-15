@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
-import PusherJS from 'pusher-js';
 import { Card, Player, TrickCard, CompletedTrick, HandResult, Suit } from '@/lib/gameLogic';
 import Lobby from '@/components/Lobby';
 import GameBoard, { RoomState } from '@/components/GameBoard';
@@ -58,31 +57,22 @@ export default function RoomPage() {
     handleJoin(nameQuery);
   }, [code, nameQuery, playerInfo]);
 
-  // Pusher subscription
+  // Polling: fetch room state every 1000ms
   useEffect(() => {
     if (!code) return;
 
-    const pusher = new PusherJS(process.env.NEXT_PUBLIC_PUSHER_KEY!, {
-      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
-    });
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/room-state?code=${code}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        setGameState(data);
+      } catch {
+        // Skip on error, try again next tick
+      }
+    }, 1000);
 
-    const channel = pusher.subscribe(`room-${code}`);
-
-    channel.bind('player-joined', (data: any) => {
-      setGameState((prev) => (prev ? { ...prev, players: data.players } : prev));
-    });
-
-    ['game-started', 'card-played', 'trick-complete', 'hand-complete'].forEach((event) => {
-      channel.bind(event, (data: any) => {
-        setGameState((prev) => (prev ? { ...prev, ...data } : data));
-      });
-    });
-
-    return () => {
-      channel.unbind_all();
-      pusher.unsubscribe(`room-${code}`);
-      pusher.disconnect();
-    };
+    return () => clearInterval(interval);
   }, [code]);
 
   const handleJoin = async (name: string) => {

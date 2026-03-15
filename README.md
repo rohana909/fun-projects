@@ -1,10 +1,10 @@
-# Mendikot — Real-time Multiplayer Card Game
+# Mendikot — Multiplayer Card Game
 
-A real-time multiplayer implementation of Mendikot, the classic Indian trick-taking card game played by 4 players in two teams.
+A multiplayer implementation of Mendikot, the classic Indian trick-taking card game played by 4 players in two teams.
 
 ## Features
 
-- Real-time multiplayer for exactly 4 players using Pusher WebSockets
+- Multiplayer for exactly 4 players using client-side polling (no external services needed)
 - Full Mendikot rules: suit following, cut hukum (setting trump), trick counting
 - Mendikot and Whitewash detection
 - Persistent score across multiple hands
@@ -16,10 +16,12 @@ A real-time multiplayer implementation of Mendikot, the classic Indian trick-tak
 ## Tech Stack
 
 - **Framework**: Next.js 14 (Pages Router) with TypeScript
-- **Real-time**: Pusher Channels (WebSockets)
+- **Real-time**: Client-side polling every 1 second (GET /api/room-state)
 - **Styling**: Tailwind CSS
 - **State**: In-memory Map (server-side); localStorage (client-side identity)
 - **Deployment**: Vercel
+
+No external services needed — just deploy to Vercel.
 
 ## Setup Instructions
 
@@ -36,35 +38,7 @@ cd mendikot
 npm install
 ```
 
-### 3. Set up Pusher
-
-1. Go to [pusher.com](https://pusher.com) and create a free account
-2. From the dashboard, click **Create app**
-3. Give it a name (e.g. "mendikot"), select a cluster close to you, choose **React** as frontend and **Node.js** as backend
-4. Click **Create app**
-5. Go to **App Keys** — you'll see `app_id`, `key`, `secret`, and `cluster`
-
-### 4. Configure environment variables
-
-```bash
-cp .env.example .env.local
-```
-
-Edit `.env.local` and fill in your Pusher credentials:
-
-```env
-PUSHER_APP_ID=your_app_id
-PUSHER_KEY=your_key
-PUSHER_SECRET=your_secret
-PUSHER_CLUSTER=your_cluster
-
-NEXT_PUBLIC_PUSHER_KEY=your_key
-NEXT_PUBLIC_PUSHER_CLUSTER=your_cluster
-```
-
-Note: `NEXT_PUBLIC_*` values are the same key/cluster — just duplicated so the browser can access them.
-
-### 5. Run the development server
+### 3. Run the development server
 
 ```bash
 npm run dev
@@ -110,16 +84,7 @@ vercel
 
 Or connect your GitHub repo to Vercel via the [Vercel dashboard](https://vercel.com).
 
-### 3. Set environment variables in Vercel
-
-In your Vercel project settings, under **Environment Variables**, add:
-
-- `PUSHER_APP_ID`
-- `PUSHER_KEY`
-- `PUSHER_SECRET`
-- `PUSHER_CLUSTER`
-- `NEXT_PUBLIC_PUSHER_KEY`
-- `NEXT_PUBLIC_PUSHER_CLUSTER`
+No environment variables are required.
 
 > **Note**: The in-memory game store works on a single server process. For high-traffic production use, replace the Map in `lib/gameStore.ts` with Redis (e.g., Upstash) to persist state across Vercel serverless function invocations.
 
@@ -129,11 +94,10 @@ In your Vercel project settings, under **Environment Variables**, add:
 mendikot/
 ├── lib/
 │   ├── gameLogic.ts      # Card game rules, deck, trick resolution
-│   ├── gameStore.ts      # In-memory room state (Map)
-│   └── pusher.ts         # Server-side Pusher singleton
+│   └── gameStore.ts      # In-memory room state (Map)
 ├── pages/
 │   ├── index.tsx         # Landing page (create/join)
-│   ├── room/[code].tsx   # Game room page
+│   ├── room/[code].tsx   # Game room page (polls /api/room-state every 1s)
 │   └── api/              # REST API endpoints
 ├── components/           # React UI components
 └── styles/globals.css

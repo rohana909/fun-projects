@@ -8,9 +8,7 @@ import {
   determineTrickWinner,
   calculateHandResult,
   getTeam,
-  cardKey,
 } from '@/lib/gameLogic';
-import { broadcastRoomState } from '@/lib/pusher';
 
 export const config = { api: { bodyParser: true } };
 
@@ -18,7 +16,7 @@ function countTens(cards: TrickCard[]): number {
   return cards.filter((tc) => tc.card.rank === '10').length;
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -103,7 +101,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Trick not complete — advance turn anticlockwise
     room.currentTurn = anticlockwiseNext(seat);
     setRoom(room.code, room);
-    await broadcastRoomState(room, 'card-played');
     return res.status(200).json({ success: true });
   }
 
@@ -138,7 +135,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Keep currentTrick for display
 
     setRoom(room.code, room);
-    await broadcastRoomState(room, 'hand-complete');
     return res.status(200).json({ success: true });
   }
 
@@ -148,6 +144,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   room.currentTurn = winner;
 
   setRoom(room.code, room);
-  await broadcastRoomState(room, 'trick-complete');
   return res.status(200).json({ success: true });
 }
