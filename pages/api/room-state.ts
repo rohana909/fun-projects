@@ -3,7 +3,7 @@ import { getRoom } from '@/lib/gameStore';
 
 export const config = { api: { bodyParser: true } };
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -14,7 +14,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     return res.status(400).json({ error: 'Code is required' });
   }
 
-  const room = getRoom(code.toUpperCase());
+  const room = await getRoom(code.toUpperCase());
 
   if (!room) {
     return res.status(404).json({ error: 'Room not found' });

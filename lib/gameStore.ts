@@ -1,8 +1,5 @@
+import { kv } from '@vercel/kv';
 import { GameRoom } from './gameLogic';
-
-// Module-level singleton — works in dev (single process).
-// On Vercel serverless, use a persistent store (Redis) for production.
-const rooms = new Map<string, GameRoom>();
 
 export function createRoom(code: string, hostId: string): GameRoom {
   const room: GameRoom = {
@@ -11,7 +8,7 @@ export function createRoom(code: string, hostId: string): GameRoom {
     players: [],
     status: 'waiting',
     hands: {},
-    dealer: 0, // host is seat 0, dealer starts at 0
+    dealer: 0,
     currentTurn: 0,
     ledSuit: null,
     trumpSuit: null,
@@ -25,16 +22,15 @@ export function createRoom(code: string, hostId: string): GameRoom {
     score: [0, 0],
     seatAssignments: {},
   };
-  rooms.set(code, room);
   return room;
 }
 
-export function getRoom(code: string): GameRoom | undefined {
-  return rooms.get(code);
+export async function getRoom(code: string): Promise<GameRoom | null> {
+  return kv.get<GameRoom>(code);
 }
 
-export function setRoom(code: string, room: GameRoom): void {
-  rooms.set(code, room);
+export async function saveRoom(code: string, room: GameRoom): Promise<void> {
+  await kv.set(code, room, { ex: 3600 });
 }
 
 // 6-char alphanumeric uppercase, no ambiguous chars (0, O, I, 1, L)

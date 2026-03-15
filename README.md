@@ -18,10 +18,8 @@ A multiplayer implementation of Mendikot, the classic Indian trick-taking card g
 - **Framework**: Next.js 14 (Pages Router) with TypeScript
 - **Real-time**: Client-side polling every 1 second (GET /api/room-state)
 - **Styling**: Tailwind CSS
-- **State**: In-memory Map (server-side); localStorage (client-side identity)
+- **State**: Vercel KV (Redis) server-side; localStorage (client-side identity)
 - **Deployment**: Vercel
-
-No external services needed — just deploy to Vercel.
 
 ## Setup Instructions
 
@@ -32,13 +30,19 @@ git clone <repo-url>
 cd mendikot
 ```
 
-### 2. Install dependencies
+### 2. Add Vercel KV to your project (free tier)
+
+Go to [vercel.com/dashboard](https://vercel.com/dashboard) → **Storage** → **Create KV Database** → link to your project. Vercel will auto-add `KV_REST_API_URL` and `KV_REST_API_TOKEN` to your project's environment variables.
+
+For local development, copy `.env.example` to `.env.local` and fill in the values from your KV database settings.
+
+### 3. Install dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Run the development server
+### 4. Run the development server
 
 ```bash
 npm run dev
@@ -69,13 +73,17 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Deployment to Vercel
 
-### 1. Build locally (optional check)
+### 1. Create a Vercel KV database
+
+Go to [vercel.com/dashboard](https://vercel.com/dashboard) → **Storage** → **Create KV Database** → link it to your project. The `KV_REST_API_URL` and `KV_REST_API_TOKEN` environment variables will be added automatically.
+
+### 2. Build locally (optional check)
 
 ```bash
 npm run build
 ```
 
-### 2. Deploy to Vercel
+### 3. Deploy to Vercel
 
 ```bash
 npm install -g vercel
@@ -84,17 +92,13 @@ vercel
 
 Or connect your GitHub repo to Vercel via the [Vercel dashboard](https://vercel.com).
 
-No environment variables are required.
-
-> **Note**: The in-memory game store works on a single server process. For high-traffic production use, replace the Map in `lib/gameStore.ts` with Redis (e.g., Upstash) to persist state across Vercel serverless function invocations.
-
 ## Project Structure
 
 ```
 mendikot/
 ├── lib/
 │   ├── gameLogic.ts      # Card game rules, deck, trick resolution
-│   └── gameStore.ts      # In-memory room state (Map)
+│   └── gameStore.ts      # Vercel KV room state (Redis)
 ├── pages/
 │   ├── index.tsx         # Landing page (create/join)
 │   ├── room/[code].tsx   # Game room page (polls /api/room-state every 1s)

@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getRoom, setRoom } from '@/lib/gameStore';
+import { getRoom, saveRoom } from '@/lib/gameStore';
 
 export const config = { api: { bodyParser: true } };
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -18,7 +18,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     return res.status(400).json({ error: 'code, playerId, and assignments are required' });
   }
 
-  const room = getRoom(code.toUpperCase());
+  const room = await getRoom(code.toUpperCase());
 
   if (!room) {
     return res.status(404).json({ error: 'Room not found' });
@@ -54,7 +54,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   room.seatAssignments = assignments;
-  setRoom(code.toUpperCase(), room);
+  await saveRoom(code.toUpperCase(), room);
 
   return res.status(200).json({ success: true });
 }
