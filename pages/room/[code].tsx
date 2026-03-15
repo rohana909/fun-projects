@@ -176,7 +176,10 @@ export default function RoomPage() {
   }, [gameState?.status]);
 
   // Check if current player is the room host by playerId
-  const isHost = !!playerInfo && !!gameState && playerInfo.playerId === gameState.hostId;
+  const isHost = !!playerInfo && !!gameState && (
+    playerInfo.playerId === gameState.hostId ||
+    gameState.players.find(p => p.id === playerInfo.playerId)?.seat === 0
+  );
 
   // Loading state
   if (loadError) {
