@@ -33,26 +33,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ error: 'Game has already started' });
   }
 
-  // Validate all 4 seats are assigned
-  const assignments = room.seatAssignments;
-  const assignedPlayerIds = Object.keys(assignments);
-  if (assignedPlayerIds.length !== 4) {
-    return res.status(400).json({ error: 'All 4 seats must be assigned before starting' });
-  }
-  const assignedSeats = new Set(Object.values(assignments));
-  if (assignedSeats.size !== 4 || ![0, 1, 2, 3].every((s) => assignedSeats.has(s))) {
-    return res.status(400).json({ error: 'Seats 0-3 must each be assigned to exactly one player' });
-  }
-
-  // Apply seat assignments: update each player's seat
-  for (const player of room.players) {
-    if (assignments[player.id] !== undefined) {
-      player.seat = assignments[player.id];
-    }
-  }
-
-  // Dealer seat may have shifted — keep dealer at seat 0 (host's assigned seat)
-  room.dealer = assignments[room.hostId] ?? 0;
+  // Use the host's seat as the dealer seat
+  const hostPlayer = room.players.find((p) => p.id === room.hostId);
+  room.dealer = hostPlayer?.seat ?? 0;
 
   const hands = dealCards(room.dealer);
 

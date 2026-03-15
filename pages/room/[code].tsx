@@ -148,15 +148,6 @@ export default function RoomPage() {
     }
   };
 
-  const handleAssignSeats = async (assignments: Record<string, number>) => {
-    if (!code || !playerInfo) return;
-    await fetch('/api/assign-seats', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code, playerId: playerInfo.playerId, assignments }),
-    });
-  };
-
   const handleNewHand = async () => {
     if (!code || !playerInfo) return;
     const res = await fetch('/api/new-hand', {
@@ -279,9 +270,7 @@ export default function RoomPage() {
           isHost={isHost}
           myName={playerInfo.name}
           myPlayerId={playerInfo.playerId}
-          seatAssignments={gameState.seatAssignments ?? {}}
           onStartGame={handleStartGame}
-          onAssignSeats={handleAssignSeats}
         />
         {lastError && (
           <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg">
