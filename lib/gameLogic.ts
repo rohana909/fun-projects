@@ -242,7 +242,7 @@ export function suitSymbol(suit: Suit): string {
 }
 
 export function suitColor(suit: Suit): string {
-  return suit === 'H' || suit === 'D' ? 'text-red-500' : 'text-slate-900';
+  return suit === 'H' || suit === 'D' ? 'text-red-600' : 'text-gray-900';
 }
 
 export function cardKey(card: Card): string {
