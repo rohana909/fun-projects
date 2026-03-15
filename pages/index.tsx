@@ -114,7 +114,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-felt flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-felt flex flex-col items-center justify-start md:justify-center p-4 py-8 overflow-y-auto">
       {/* Header */}
       <div className="text-center mb-10">
         <h1 className="text-6xl font-bold text-white tracking-wide drop-shadow-lg">
