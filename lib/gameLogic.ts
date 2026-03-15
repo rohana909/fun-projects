@@ -34,6 +34,7 @@ export interface Player {
   id: string;
   name: string;
   seat: number;
+  isBot?: boolean;
 }
 
 export interface HandResult {
