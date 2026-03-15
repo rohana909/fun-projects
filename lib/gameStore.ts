@@ -1,4 +1,9 @@
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis';
+
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+});
 import { GameRoom } from './gameLogic';
 
 export function createRoom(code: string, hostId: string): GameRoom {
@@ -26,11 +31,11 @@ export function createRoom(code: string, hostId: string): GameRoom {
 }
 
 export async function getRoom(code: string): Promise<GameRoom | null> {
-  return kv.get<GameRoom>(code);
+  return redis.get<GameRoom>(code);
 }
 
 export async function saveRoom(code: string, room: GameRoom): Promise<void> {
-  await kv.set(code, room, { ex: 3600 });
+  await redis.set(code, room, { ex: 3600 });
 }
 
 // 6-char alphanumeric uppercase, no ambiguous chars (0, O, I, 1, L)

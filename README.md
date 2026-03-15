@@ -18,7 +18,7 @@ A multiplayer implementation of Mendikot, the classic Indian trick-taking card g
 - **Framework**: Next.js 14 (Pages Router) with TypeScript
 - **Real-time**: Client-side polling every 1 second (GET /api/room-state)
 - **Styling**: Tailwind CSS
-- **State**: Vercel KV (Redis) server-side; localStorage (client-side identity)
+- **State**: Upstash Redis server-side; localStorage (client-side identity)
 - **Deployment**: Vercel
 
 ## Setup Instructions
@@ -30,11 +30,18 @@ git clone <repo-url>
 cd mendikot
 ```
 
-### 2. Add Vercel KV to your project (free tier)
+### 2. Set up Upstash Redis (free tier)
 
-Go to [vercel.com/dashboard](https://vercel.com/dashboard) → **Storage** → **Create KV Database** → link to your project. Vercel will auto-add `KV_REST_API_URL` and `KV_REST_API_TOKEN` to your project's environment variables.
+1. Go to [upstash.com](https://upstash.com) and create a free Redis database.
+2. From the database details page, copy the **REST URL** and **REST Token**.
+3. Copy `.env.example` to `.env.local` and fill in the values:
 
-For local development, copy `.env.example` to `.env.local` and fill in the values from your KV database settings.
+```
+UPSTASH_REDIS_REST_URL=your_url
+UPSTASH_REDIS_REST_TOKEN=your_token
+```
+
+For Vercel deployments, add these same two environment variables in your project's Vercel dashboard settings.
 
 ### 3. Install dependencies
 
@@ -73,9 +80,9 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Deployment to Vercel
 
-### 1. Create a Vercel KV database
+### 1. Set up Upstash Redis
 
-Go to [vercel.com/dashboard](https://vercel.com/dashboard) → **Storage** → **Create KV Database** → link it to your project. The `KV_REST_API_URL` and `KV_REST_API_TOKEN` environment variables will be added automatically.
+Go to [upstash.com](https://upstash.com), create a free Redis database, and add `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` as environment variables in your Vercel project dashboard.
 
 ### 2. Build locally (optional check)
 
@@ -98,7 +105,7 @@ Or connect your GitHub repo to Vercel via the [Vercel dashboard](https://vercel.
 mendikot/
 ├── lib/
 │   ├── gameLogic.ts      # Card game rules, deck, trick resolution
-│   └── gameStore.ts      # Vercel KV room state (Redis)
+│   └── gameStore.ts      # Upstash Redis room state
 ├── pages/
 │   ├── index.tsx         # Landing page (create/join)
 │   ├── room/[code].tsx   # Game room page (polls /api/room-state every 1s)
