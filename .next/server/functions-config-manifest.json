@@ -1,1 +1,1 @@
-{"version":1,"functions":{"/api/create-room":{},"/api/new-hand":{},"/api/room-state":{},"/api/start-game":{},"/api/play-card":{},"/api/join-room":{}}}
+{"version":1,"functions":{"/api/create-room":{},"/api/create-bot-game":{},"/api/join-room":{},"/api/new-hand":{},"/api/play-card":{},"/api/room-state":{},"/api/start-game":{}}}

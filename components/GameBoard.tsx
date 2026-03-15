@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from 'react';
 import { Card, Player, TrickCard, CompletedTrick, HandResult, Suit, suitSymbol, suitColor } from '@/lib/gameLogic';
 import CardComponent from './CardComponent';
 import Hand from './Hand';
@@ -34,10 +35,10 @@ interface GameBoardProps {
   lastError: string | null;
 }
 
-function FaceDownHand({ count, name, seat, isCurrentTurn }: { count: number; name: string; seat: number; isCurrentTurn: boolean }) {
+function FaceDownHand({ count, name, isCurrentTurn, isMe }: { count: number; name: string; seat: number; isCurrentTurn: boolean; isMe?: boolean }) {
   return (
-    <div className={`flex flex-col items-center gap-1 ${isCurrentTurn ? 'ring-2 ring-yellow-400 rounded-lg p-1' : ''}`}>
-      <span className={`text-xs font-medium ${isCurrentTurn ? 'text-yellow-300' : 'text-green-400'}`}>
+    <div className={`flex flex-col items-center gap-1 rounded-lg p-1 transition-all ${isCurrentTurn ? 'glow-pulse ring-2 ring-green-400' : ''}`}>
+      <span className={`text-xs font-medium ${isCurrentTurn ? 'text-green-300' : isMe ? 'text-yellow-300' : 'text-green-400'}`}>
         {name} {isCurrentTurn ? '▶' : ''}
       </span>
       <div className="flex gap-0.5">
@@ -83,15 +84,30 @@ export default function GameBoard({
   const myCards = hands[mySeat] || [];
   const isMyTurn = currentTurn === mySeat;
 
-  // Other players relative to me
-  const leftSeat = (mySeat + 1) % 4;
-  const topSeat = (mySeat + 2) % 4;
-  const rightSeat = (mySeat + 3) % 4;
+  // Track trick winner to display briefly in TrickArea
+  const [trickWinner, setTrickWinner] = useState<string | null>(null);
+  const prevTrickTotal = useRef<number>(0);
 
   const getPlayerName = (seat: number) => {
     const p = players.find((pl) => pl.seat === seat);
     return p ? p.name : `Seat ${seat}`;
   };
+
+  useEffect(() => {
+    const total = trickCount[0] + trickCount[1];
+    if (total > prevTrickTotal.current && gameState.lastTrick) {
+      const winnerName = getPlayerName(gameState.lastTrick.winner);
+      setTrickWinner(winnerName);
+      prevTrickTotal.current = total;
+      const timer = setTimeout(() => setTrickWinner(null), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [trickCount, gameState.lastTrick]);
+
+  // Other players relative to me
+  const leftSeat = (mySeat + 1) % 4;
+  const topSeat = (mySeat + 2) % 4;
+  const rightSeat = (mySeat + 3) % 4;
 
   const getCardCount = (seat: number) => {
     const h = hands[seat];
@@ -100,7 +116,14 @@ export default function GameBoard({
 
   return (
     <div className="flex flex-col h-full bg-felt overflow-hidden">
-      {/* Trump indicator bar */}
+      {/* YOUR TURN banner */}
+      {isMyTurn && (
+        <div className="your-turn-banner flex items-center justify-center gap-2 py-2 bg-green-900 border-b-2 border-green-400">
+          <span className="text-green-100 font-bold text-base tracking-widest uppercase">Your Turn</span>
+        </div>
+      )}
+
+      {/* Turn / Trump indicator bar */}
       <div className="flex items-center justify-center gap-3 py-1 bg-felt-dark border-b border-green-800 text-sm">
         <span className="text-green-500">Trump:</span>
         {trumpSuit ? (
@@ -111,9 +134,11 @@ export default function GameBoard({
           <span className="text-green-700 italic text-xs">Cut Hukum — not set yet</span>
         )}
         <span className="text-green-700 text-xs">|</span>
-        <span className={`text-xs font-medium ${isMyTurn ? 'text-yellow-300 animate-pulse' : 'text-green-400'}`}>
-          {isMyTurn ? 'Your turn!' : `${getPlayerName(currentTurn)}'s turn`}
-        </span>
+        {!isMyTurn && (
+          <span className="text-green-400 text-xs font-medium">
+            {getPlayerName(currentTurn)}&apos;s turn...
+          </span>
+        )}
       </div>
 
       {/* Main game area */}
@@ -148,6 +173,7 @@ export default function GameBoard({
               players={players}
               trumpSuit={trumpSuit}
               ledSuit={ledSuit}
+              trickWinner={trickWinner}
             />
           </div>
 

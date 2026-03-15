@@ -25,3 +25,40 @@
     color: #111111 !important;
   }
 }
+
+@keyframes slideIn {
+  from { opacity: 0; transform: scale(0.7) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.card-play-in {
+  animation: slideIn 0.25s ease-out forwards;
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.7); }
+}
+.card-fade-out {
+  animation: fadeOut 0.4s ease-in forwards;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 8px 2px rgba(74, 222, 128, 0.4); }
+  50% { box-shadow: 0 0 20px 8px rgba(74, 222, 128, 0.85); }
+}
+.glow-pulse {
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+@keyframes your-turn-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 12px 3px rgba(74, 222, 128, 0.5); }
+  50% { opacity: 0.8; box-shadow: 0 0 24px 8px rgba(74, 222, 128, 0.9); }
+}
+.your-turn-banner {
+  animation: your-turn-pulse 1s ease-in-out infinite;
+}
+
+.trick-area-card {
+  transition: all 0.3s ease-in-out;
+  box-shadow: 3px 3px 12px rgba(0,0,0,0.5);
+}

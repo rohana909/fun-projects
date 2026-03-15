@@ -1,4 +1,4 @@
-import { TrickCard, Player, Suit } from '@/lib/gameLogic';
+import { TrickCard, Player, Suit, cardKey } from '@/lib/gameLogic';
 import CardComponent from './CardComponent';
 
 interface TrickAreaProps {
@@ -7,9 +7,10 @@ interface TrickAreaProps {
   players: Player[];
   trumpSuit: Suit | null;
   ledSuit: Suit | null;
+  trickWinner: string | null;
 }
 
-export default function TrickArea({ currentTrick, mySeat, players, trumpSuit, ledSuit }: TrickAreaProps) {
+export default function TrickArea({ currentTrick, mySeat, players, trumpSuit, ledSuit, trickWinner }: TrickAreaProps) {
   // Map seat -> trick card played
   const playedBySeat = new Map(currentTrick.map((tc) => [tc.seat, tc.card]));
 
@@ -32,7 +33,8 @@ export default function TrickArea({ currentTrick, mySeat, players, trumpSuit, le
     position: 'top' | 'bottom' | 'left' | 'right';
   }) => {
     const card = playedBySeat.get(seat);
-    const name = getPlayerName(seat);
+    const isMe = seat === mySeat;
+    const label = isMe ? 'You' : getPlayerName(seat);
 
     const positionClasses: Record<string, string> = {
       top: 'top-0 left-1/2 -translate-x-1/2 flex-col items-center',
@@ -41,21 +43,26 @@ export default function TrickArea({ currentTrick, mySeat, players, trumpSuit, le
       right: 'right-0 top-1/2 -translate-y-1/2 flex-col items-center',
     };
 
+    const labelColorClass = isMe ? 'text-yellow-300 font-semibold' : 'text-green-400 font-medium';
+
     return (
       <div className={`absolute flex ${positionClasses[position]} gap-1`}>
         {position === 'bottom' && (
-          <span className="text-green-300 text-xs font-medium truncate max-w-16 text-center">
-            {name}
+          <span className={`text-xs truncate max-w-16 text-center ${labelColorClass}`}>
+            {label}
           </span>
         )}
         {card ? (
-          <CardComponent card={card} size="sm" />
+          // key forces remount (and thus animation replay) when card changes
+          <div key={cardKey(card)} className="card-play-in trick-area-card">
+            <CardComponent card={card} size="sm" />
+          </div>
         ) : (
-          <div className="w-10 h-14 rounded-lg border border-dashed border-green-700 opacity-40" />
+          <div className="w-10 h-14 rounded-lg border-2 border-dashed border-green-700/50 opacity-50 bg-green-950/20" />
         )}
         {position !== 'bottom' && (
-          <span className="text-green-400 text-xs font-medium truncate max-w-16 text-center">
-            {name}
+          <span className={`text-xs truncate max-w-16 text-center ${labelColorClass}`}>
+            {label}
           </span>
         )}
       </div>
@@ -64,25 +71,23 @@ export default function TrickArea({ currentTrick, mySeat, players, trumpSuit, le
 
   return (
     <div className="flex flex-col items-center gap-1">
-      {/* Trump indicator above trick */}
-      {trumpSuit && (
-        <div className="text-yellow-300 text-xs font-semibold">
-          Trump set
-        </div>
-      )}
-
       <div className="relative w-44 h-44 md:w-52 md:h-52">
         <CardSlot seat={topSeat} position="top" />
         <CardSlot seat={leftSeat} position="left" />
         <CardSlot seat={rightSeat} position="right" />
         <CardSlot seat={bottomSeat} position="bottom" />
 
-        {/* Center: show trick number or empty indicator */}
-        {currentTrick.length === 0 && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-8 h-8 rounded-full border border-green-700 opacity-30" />
-          </div>
-        )}
+        {/* Center: empty indicator or trick winner flash */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          {trickWinner ? (
+            <div className="bg-green-900/90 border border-green-400 rounded-lg px-2 py-1 text-center shadow-lg">
+              <div className="text-green-200 text-xs font-bold leading-tight">{trickWinner}</div>
+              <div className="text-green-400 text-xs leading-tight">wins!</div>
+            </div>
+          ) : currentTrick.length === 0 ? (
+            <div className="w-8 h-8 rounded-full border border-green-700 opacity-20" />
+          ) : null}
+        </div>
       </div>
     </div>
   );
