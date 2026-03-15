@@ -116,17 +116,14 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-felt flex flex-col items-center justify-start md:justify-center p-4 py-8 overflow-y-auto">
       {/* Header */}
-      <div className="text-center mb-10">
-        <h1 className="text-6xl font-bold text-white tracking-wide drop-shadow-lg">
+      <div className="text-center mb-6">
+        <h1 className="text-4xl font-bold text-white tracking-wide drop-shadow-lg">
           Mendikot
         </h1>
-        <p className="text-green-300 text-xl mt-2 font-light">
-          The Classic Indian Card Game
-        </p>
-        <div className="flex justify-center gap-4 mt-3 text-3xl">
+        <div className="flex justify-center gap-3 mt-1 text-2xl">
           <span>♠</span>
-          <span className="text-red-400">♥</span>
-          <span className="text-red-400">♦</span>
+          <span className="text-red-500">♥</span>
+          <span className="text-red-500">♦</span>
           <span>♣</span>
         </div>
       </div>

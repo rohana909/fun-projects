@@ -3,13 +3,11 @@
 @tailwind utilities;
 
 @layer base {
-  html, body {
-    height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
+  html {
+    overflow-y: scroll;
   }
-  #__next {
-    min-height: 100%;
+  body {
+    min-height: 100vh;
   }
 }
 
