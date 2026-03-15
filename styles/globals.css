@@ -18,4 +18,10 @@
   .glow-green {
     box-shadow: 0 0 12px 3px rgba(74, 222, 128, 0.7);
   }
+  .suit-red {
+    color: #dc2626 !important;
+  }
+  .suit-black {
+    color: #111111 !important;
+  }
 }

@@ -243,7 +243,8 @@ export function suitSymbol(suit: Suit): string {
 }
 
 export function suitColor(suit: Suit): string {
-  return suit === 'H' || suit === 'D' ? 'text-red-600' : 'text-gray-900';
+  // Inline style approach to avoid Tailwind purging dynamic classes
+  return suit === 'H' || suit === 'D' ? 'suit-red' : 'suit-black';
 }
 
 export function cardKey(card: Card): string {
