@@ -79,11 +79,11 @@ export default function GameBoard({
     currentTrick,
     trickCount,
     tensCount,
-    capturedTens,
     score,
     dealer,
     lastTrick,
   } = gameState;
+  const capturedTens = gameState.capturedTens || {};
 
   const myCards = hands[mySeat] || [];
   const isMyTurn = currentTurn === mySeat;

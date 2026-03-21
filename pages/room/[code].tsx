@@ -22,7 +22,9 @@ export default function RoomPage() {
   const [joinName, setJoinName] = useState('');
   const [joinError, setJoinError] = useState('');
   const [loadError, setLoadError] = useState('');
+  const [showHandResult, setShowHandResult] = useState(false);
   const hasAutoJoined = useRef(false);
+  const prevStatus = useRef<string | null>(null);
 
   // Load player info from localStorage on mount or when code changes
   useEffect(() => {
@@ -284,10 +286,7 @@ export default function RoomPage() {
     );
   }
 
-  const [showHandResult, setShowHandResult] = useState(false);
-
   // When hand completes, reset modal visibility so host can review the board first
-  const prevStatus = useRef<string | null>(null);
   useEffect(() => {
     if (!gameState) return;
     if (prevStatus.current === 'playing' && gameState.status === 'hand_complete') {
