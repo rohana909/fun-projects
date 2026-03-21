@@ -111,11 +111,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     room.trumpSuit
   );
 
-  const trickTens = countTens(room.currentTrick);
   const winnerTeam = getTeam(winner);
 
   room.trickCount[winnerTeam]++;
-  room.tensCount[winnerTeam] += trickTens;
+
+  // Track each captured 10 by suit
+  if (!room.capturedTens) room.capturedTens = {};
+  for (const tc of room.currentTrick) {
+    if (tc.card.rank === '10') {
+      room.capturedTens[tc.card.suit] = winnerTeam;
+    }
+  }
+  room.tensCount[0] = Object.values(room.capturedTens).filter((t) => t === 0).length;
+  room.tensCount[1] = Object.values(room.capturedTens).filter((t) => t === 1).length;
 
   const completedTrick: CompletedTrick = {
     winner,

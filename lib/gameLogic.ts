@@ -67,6 +67,7 @@ export interface GameRoom {
   completedTricks: CompletedTrick[];
   trickCount: [number, number]; // [team0, team1]
   tensCount: [number, number]; // [team0, team1]
+  capturedTens: Partial<Record<Suit, 0 | 1>>; // suit -> team index that captured it
 
   lastTrick: CompletedTrick | null; // for display after trick
   handResult: HandResult | null;

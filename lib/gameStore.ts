@@ -22,6 +22,7 @@ export function createRoom(code: string, hostId: string): GameRoom {
     completedTricks: [],
     trickCount: [0, 0],
     tensCount: [0, 0],
+    capturedTens: {},
     lastTrick: null,
     handResult: null,
     score: [0, 0],

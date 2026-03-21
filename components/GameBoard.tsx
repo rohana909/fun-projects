@@ -20,6 +20,7 @@ export interface RoomState {
   currentTrick: TrickCard[];
   trickCount: [number, number];
   tensCount: [number, number];
+  capturedTens: Partial<Record<Suit, 0 | 1>>;
   lastTrick: CompletedTrick | null;
   handResult: HandResult | null;
   score: [number, number];
@@ -78,6 +79,7 @@ export default function GameBoard({
     currentTrick,
     trickCount,
     tensCount,
+    capturedTens,
     score,
     dealer,
     lastTrick,
@@ -213,6 +215,7 @@ export default function GameBoard({
         trumpSetBySeat={trumpSetBySeat}
         trickCount={trickCount}
         tensCount={tensCount}
+        capturedTens={capturedTens ?? {}}
         score={score}
         dealer={dealer}
       />

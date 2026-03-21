@@ -8,6 +8,7 @@ interface SidebarProps {
   trumpSetBySeat: number | null;
   trickCount: [number, number];
   tensCount: [number, number];
+  capturedTens: Partial<Record<Suit, 0 | 1>>;
   score: [number, number];
   dealer: number;
 }
@@ -31,6 +32,7 @@ export default function Sidebar({
   trumpSetBySeat,
   trickCount,
   tensCount,
+  capturedTens,
   score,
   dealer,
 }: SidebarProps) {
@@ -41,11 +43,10 @@ export default function Sidebar({
 
   const trumpSetter = trumpSetBySeat !== null ? getPlayerName(trumpSetBySeat) : null;
 
-  // Which team owns each ten slot (order: ♠ ♥ ♦ ♣)
-  // First tensCount[0] slots → Team A, next tensCount[1] → Team B, rest → uncaptured
-  const getTenOwner = (index: number): 'A' | 'B' | null => {
-    if (index < tensCount[0]) return 'A';
-    if (index < tensCount[0] + tensCount[1]) return 'B';
+  const getTenOwner = (suit: Suit): 'A' | 'B' | null => {
+    const team = capturedTens[suit];
+    if (team === 0) return 'A';
+    if (team === 1) return 'B';
     return null;
   };
 
@@ -59,8 +60,8 @@ export default function Sidebar({
             Tens Captured
           </div>
           <div className="flex justify-center gap-3">
-            {TENS_SUITS.map((suit, i) => {
-              const owner = getTenOwner(i);
+            {TENS_SUITS.map((suit) => {
+              const owner = getTenOwner(suit);
               const captured = owner !== null;
               return (
                 <div
