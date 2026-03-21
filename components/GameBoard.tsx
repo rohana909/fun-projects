@@ -216,7 +216,7 @@ export default function GameBoard({
           trumpSetBySeat={trumpSetBySeat}
           trickCount={trickCount}
           tensCount={tensCount}
-          capturedTens={capturedTens ?? {}}
+          capturedTens={capturedTens || {}}
           score={score}
           dealer={dealer}
         />

@@ -36,6 +36,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   room.completedTricks = [];
   room.trickCount = [0, 0];
   room.tensCount = [0, 0];
+  room.capturedTens = {};
   room.ledSuit = null;
   room.trumpSuit = null;
   room.trumpSetBySeat = null;
