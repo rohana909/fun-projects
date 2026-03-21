@@ -6,11 +6,12 @@
   html, body {
     height: 100%;
     overflow: hidden;
+    overscroll-behavior: none;
   }
   #__next {
     height: 100%;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
   }
 }
 

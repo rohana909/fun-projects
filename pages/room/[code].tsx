@@ -305,7 +305,7 @@ export default function RoomPage() {
 
   // Game in progress or hand complete
   return (
-    <div className="min-h-full flex flex-col">
+    <div className="flex flex-col" style={{ height: '100dvh' }}>
       <GameBoard
         gameState={gameState}
         mySeat={playerInfo.seat}
