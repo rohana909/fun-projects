@@ -243,8 +243,17 @@ export function suitSymbol(suit: Suit): string {
 }
 
 export function suitColor(suit: Suit): string {
-  // Inline style approach to avoid Tailwind purging dynamic classes
-  return suit === 'H' || suit === 'D' ? 'suit-red' : 'suit-black';
+  return suit === 'H' || suit === 'D' ? '#dc2626' : '#111111';
+}
+
+export const SUIT_ORDER: Record<Suit, number> = { S: 0, H: 1, D: 2, C: 3 };
+
+export function sortBySuit(cards: Card[]): Card[] {
+  return [...cards].sort((a, b) => {
+    const suitDiff = SUIT_ORDER[a.suit] - SUIT_ORDER[b.suit];
+    if (suitDiff !== 0) return suitDiff;
+    return rankValue(a.rank) - rankValue(b.rank);
+  });
 }
 
 export function cardKey(card: Card): string {

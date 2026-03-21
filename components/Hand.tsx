@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, Suit } from '@/lib/gameLogic';
+import { Card, Suit, sortBySuit } from '@/lib/gameLogic';
 import CardComponent from './CardComponent';
 
 interface HandProps {
@@ -59,11 +59,11 @@ export default function Hand({ cards, isMyTurn, ledSuit, trumpSuit, onPlayCard, 
 
       {/* Cards */}
       <div className="flex flex-row items-end justify-center flex-wrap gap-1 px-2 max-w-full">
-        {cards.map((card, idx) => {
+        {sortBySuit(cards).map((card, idx) => {
           const playable = isCardPlayable(card, cards, ledSuit, isMyTurn);
           return (
             <CardComponent
-              key={`${card.rank}${card.suit}-${idx}`}
+              key={`${card.rank}${card.suit}`}
               card={card}
               highlight={playable}
               disabled={!playable}

@@ -1,5 +1,6 @@
 import { Card, suitSymbol, suitColor } from '@/lib/gameLogic';
 
+
 interface CardProps {
   card: Card;
   onClick?: () => void;
@@ -31,7 +32,7 @@ export default function CardComponent({
 }: CardProps) {
   const sizeClass = sizeClasses[size];
   const symbolSize = symbolSizeClasses[size];
-  const colorClass = suitColor(card.suit);
+  const color = suitColor(card.suit);
   const symbol = suitSymbol(card.suit);
 
   const isClickable = !!onClick && !disabled;
@@ -66,7 +67,7 @@ export default function CardComponent({
       onClick={isClickable ? onClick : undefined}
     >
       {/* Top-left rank + suit */}
-      <div className={`absolute top-0.5 left-1 leading-none ${colorClass}`}>
+      <div className="absolute top-0.5 left-1 leading-none" style={{ color }}>
         <div className="font-bold leading-none" style={{ fontSize: size === 'sm' ? '0.6rem' : '0.75rem' }}>
           {card.rank}
         </div>
@@ -76,13 +77,14 @@ export default function CardComponent({
       </div>
 
       {/* Center symbol */}
-      <div className={`absolute inset-0 flex items-center justify-center ${colorClass} ${symbolSize} font-bold`}>
+      <div className={`absolute inset-0 flex items-center justify-center ${symbolSize} font-bold`} style={{ color }}>
         {symbol}
       </div>
 
       {/* Bottom-right rank + suit (rotated) */}
       <div
-        className={`absolute bottom-0.5 right-1 leading-none ${colorClass} rotate-180`}
+        className="absolute bottom-0.5 right-1 leading-none rotate-180"
+        style={{ color }}
       >
         <div className="font-bold leading-none" style={{ fontSize: size === 'sm' ? '0.6rem' : '0.75rem' }}>
           {card.rank}
