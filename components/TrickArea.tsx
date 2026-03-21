@@ -1,8 +1,9 @@
-import { TrickCard, Player, Suit, cardKey } from '@/lib/gameLogic';
+import { TrickCard, CompletedTrick, Player, Suit, cardKey } from '@/lib/gameLogic';
 import CardComponent from './CardComponent';
 
 interface TrickAreaProps {
   currentTrick: TrickCard[];
+  lastTrick: CompletedTrick | null;
   mySeat: number;
   players: Player[];
   trumpSuit: Suit | null;
@@ -10,9 +11,10 @@ interface TrickAreaProps {
   trickWinner: string | null;
 }
 
-export default function TrickArea({ currentTrick, mySeat, players, trumpSuit, ledSuit, trickWinner }: TrickAreaProps) {
-  // Map seat -> trick card played
-  const playedBySeat = new Map(currentTrick.map((tc) => [tc.seat, tc.card]));
+export default function TrickArea({ currentTrick, lastTrick, mySeat, players, trumpSuit, ledSuit, trickWinner }: TrickAreaProps) {
+  // Show currentTrick cards; if empty (trick just completed), fall back to lastTrick for display
+  const displayCards = currentTrick.length > 0 ? currentTrick : (lastTrick?.cards ?? []);
+  const playedBySeat = new Map(displayCards.map((tc) => [tc.seat, tc.card]));
 
   // Relative positions for display
   const bottomSeat = mySeat;

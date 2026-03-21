@@ -284,6 +284,25 @@ export default function RoomPage() {
     );
   }
 
+  const [showHandResult, setShowHandResult] = useState(false);
+
+  // When hand completes, reset modal visibility so host can review the board first
+  const prevStatus = useRef<string | null>(null);
+  useEffect(() => {
+    if (!gameState) return;
+    if (prevStatus.current === 'playing' && gameState.status === 'hand_complete') {
+      setShowHandResult(false); // hide modal — let players see last trick first
+      // Non-hosts auto-reveal results after 4 seconds
+      if (!isHost) {
+        setTimeout(() => setShowHandResult(true), 4000);
+      }
+    }
+    if (gameState.status === 'playing') {
+      setShowHandResult(false);
+    }
+    prevStatus.current = gameState.status;
+  }, [gameState?.status]);
+
   // Game in progress or hand complete
   return (
     <div className="h-full flex flex-col">
@@ -297,8 +316,25 @@ export default function RoomPage() {
         lastError={lastError}
       />
 
-      {/* End hand modal overlay */}
-      {gameState.status === 'hand_complete' && gameState.handResult && (
+      {/* Host "Hand Done" banner — shown when hand is complete, before result modal */}
+      {gameState.status === 'hand_complete' && !showHandResult && (
+        <div className="fixed bottom-0 left-0 right-0 z-40 flex flex-col items-center gap-2 pb-4 pt-3 bg-felt-dark border-t border-green-700">
+          <p className="text-green-300 text-sm">Hand is over — last trick shown above</p>
+          {isHost ? (
+            <button
+              onClick={() => setShowHandResult(true)}
+              className="px-6 py-2 rounded-xl bg-green-500 hover:bg-green-400 text-white font-bold text-base transition-colors shadow-lg"
+            >
+              See Results →
+            </button>
+          ) : (
+            <p className="text-green-600 text-xs">Results showing in a moment...</p>
+          )}
+        </div>
+      )}
+
+      {/* End hand modal overlay — only after host taps "See Results" */}
+      {gameState.status === 'hand_complete' && gameState.handResult && showHandResult && (
         <EndHandModal
           result={gameState.handResult}
           score={gameState.score}

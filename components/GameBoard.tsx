@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Card, Player, TrickCard, CompletedTrick, HandResult, Suit, suitSymbol, suitColor } from '@/lib/gameLogic';
+
 import CardComponent from './CardComponent';
 import Hand from './Hand';
 import TrickArea from './TrickArea';
@@ -79,6 +80,7 @@ export default function GameBoard({
     tensCount,
     score,
     dealer,
+    lastTrick,
   } = gameState;
 
   const myCards = hands[mySeat] || [];
@@ -169,6 +171,7 @@ export default function GameBoard({
           <div className="flex-1 flex items-center justify-center">
             <TrickArea
               currentTrick={currentTrick}
+              lastTrick={lastTrick}
               mySeat={mySeat}
               players={players}
               trumpSuit={trumpSuit}
