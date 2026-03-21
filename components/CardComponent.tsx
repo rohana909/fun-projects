@@ -32,8 +32,14 @@ export default function CardComponent({
 }: CardProps) {
   const sizeClass = sizeClasses[size];
   const symbolSize = symbolSizeClasses[size];
-  const color = suitColor(card.suit);
-  const symbol = suitSymbol(card.suit);
+  
+  // Defensive: if card is undefined/null, treat as face down
+  if (!card || !card.suit || !card.rank) {
+    faceDown = true;
+  }
+  
+  const color = card ? suitColor(card.suit) : '#000';
+  const symbol = card ? suitSymbol(card.suit) : '?';
 
   const isClickable = !!onClick && !disabled;
 

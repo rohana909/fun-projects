@@ -69,20 +69,19 @@ export default function GameBoard({
   isHost,
   lastError,
 }: GameBoardProps) {
-  const {
-    players,
-    hands,
-    currentTurn,
-    ledSuit,
-    trumpSuit,
-    trumpSetBySeat,
-    currentTrick,
-    trickCount,
-    tensCount,
-    score,
-    dealer,
-    lastTrick,
-  } = gameState;
+  // Destructure with defensive defaults for all potentially null/undefined values
+  const players = gameState.players || [];
+  const hands = gameState.hands || {};
+  const currentTurn = gameState.currentTurn ?? 0;
+  const ledSuit = gameState.ledSuit ?? null;
+  const trumpSuit = gameState.trumpSuit ?? null;
+  const trumpSetBySeat = gameState.trumpSetBySeat ?? null;
+  const currentTrick = gameState.currentTrick || [];
+  const trickCount = gameState.trickCount || [0, 0];
+  const tensCount = gameState.tensCount || [0, 0];
+  const score = gameState.score || [0, 0];
+  const dealer = gameState.dealer ?? 0;
+  const lastTrick = gameState.lastTrick ?? null;
   const capturedTens = gameState.capturedTens || {};
 
   const myCards = hands[mySeat] || [];

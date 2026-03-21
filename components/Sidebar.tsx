@@ -30,8 +30,15 @@ export default function Sidebar({
   score,
   dealer,
 }: SidebarProps) {
+  // Defensive null checks
+  const safePlayers = players || [];
+  const safeTensCount = tensCount || [0, 0];
+  const safeCapturedTens = capturedTens || {};
+  const safeTrickCount = trickCount || [0, 0];
+  const safeScore = score || [0, 0];
+
   const getTenOwner = (suit: Suit): 'A' | 'B' | null => {
-    const team = capturedTens[suit];
+    const team = safeCapturedTens[suit];
     if (team === 0) return 'A';
     if (team === 1) return 'B';
     return null;
@@ -69,8 +76,8 @@ export default function Sidebar({
             );
           })}
           <div className="flex flex-col ml-1 leading-none">
-            <span className="text-blue-300" style={{ fontSize: '0.6rem' }}>A:{tensCount[0]}</span>
-            <span className="text-orange-300" style={{ fontSize: '0.6rem' }}>B:{tensCount[1]}</span>
+            <span className="text-blue-300" style={{ fontSize: '0.6rem' }}>A:{safeTensCount[0]}</span>
+            <span className="text-orange-300" style={{ fontSize: '0.6rem' }}>B:{safeTensCount[1]}</span>
           </div>
         </div>
 
@@ -90,9 +97,9 @@ export default function Sidebar({
         <div className="flex flex-col items-center">
           <span className="text-green-600 uppercase tracking-wide" style={{ fontSize: '0.5rem' }}>Tricks</span>
           <span className="font-bold" style={{ fontSize: '0.75rem' }}>
-            <span className="text-blue-300">{trickCount[0]}</span>
+            <span className="text-blue-300">{safeTrickCount[0]}</span>
             <span className="text-green-700">–</span>
-            <span className="text-orange-300">{trickCount[1]}</span>
+            <span className="text-orange-300">{safeTrickCount[1]}</span>
           </span>
         </div>
 
@@ -100,16 +107,16 @@ export default function Sidebar({
         <div className="flex flex-col items-center">
           <span className="text-green-600 uppercase tracking-wide" style={{ fontSize: '0.5rem' }}>Wins</span>
           <span className="font-bold" style={{ fontSize: '0.75rem' }}>
-            <span className="text-blue-300">{score[0]}</span>
+            <span className="text-blue-300">{safeScore[0]}</span>
             <span className="text-green-700">–</span>
-            <span className="text-orange-300">{score[1]}</span>
+            <span className="text-orange-300">{safeScore[1]}</span>
           </span>
         </div>
 
         {/* Players */}
         <div className="flex flex-col gap-0.5">
           {[0, 1, 2, 3].map((seat) => {
-            const player = players.find((p) => p.seat === seat);
+            const player = safePlayers.find((p) => p.seat === seat);
             const isMe = seat === mySeat;
             const isCurrentTurn = seat === currentTurn;
             const isDealer = seat === dealer;

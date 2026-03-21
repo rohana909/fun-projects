@@ -33,7 +33,10 @@ export default function Hand({ cards, isMyTurn, ledSuit, trumpSuit, onPlayCard, 
     }
   }, [lastError]);
 
-  if (cards.length === 0) {
+  // Defensive: ensure cards is always an array
+  const safeCards = cards || [];
+
+  if (safeCards.length === 0) {
     return (
       <div className="flex items-center justify-center h-20 text-green-600 text-sm">
         No cards in hand
@@ -59,8 +62,8 @@ export default function Hand({ cards, isMyTurn, ledSuit, trumpSuit, onPlayCard, 
 
       {/* Cards */}
       <div className="flex flex-row items-end justify-start gap-1 px-2 w-full overflow-x-auto" style={{ WebkitOverflowScrolling: 'touch' } as React.CSSProperties}>
-        {sortBySuit(cards).map((card, idx) => {
-          const playable = isCardPlayable(card, cards, ledSuit, isMyTurn);
+        {sortBySuit(safeCards).map((card, idx) => {
+          const playable = isCardPlayable(card, safeCards, ledSuit, isMyTurn);
           return (
             <CardComponent
               key={`${card.rank}${card.suit}`}

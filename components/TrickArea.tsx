@@ -12,8 +12,10 @@ interface TrickAreaProps {
 }
 
 export default function TrickArea({ currentTrick, lastTrick, mySeat, players, trumpSuit, ledSuit, trickWinner }: TrickAreaProps) {
+  // Defensive: ensure currentTrick is always an array
+  const safeTrick = currentTrick || [];
   // Show currentTrick cards; if empty (trick just completed), fall back to lastTrick for display
-  const displayCards = currentTrick.length > 0 ? currentTrick : (lastTrick?.cards ?? []);
+  const displayCards = safeTrick.length > 0 ? safeTrick : (lastTrick?.cards ?? []);
   const playedBySeat = new Map(displayCards.map((tc) => [tc.seat, tc.card]));
 
   // Relative positions for display
@@ -86,7 +88,7 @@ export default function TrickArea({ currentTrick, lastTrick, mySeat, players, tr
               <div className="text-green-200 text-xs font-bold leading-tight">{trickWinner}</div>
               <div className="text-green-400 text-xs leading-tight">wins!</div>
             </div>
-          ) : currentTrick.length === 0 ? (
+          ) : safeTrick.length === 0 ? (
             <div className="w-8 h-8 rounded-full border border-green-700 opacity-20" />
           ) : null}
         </div>

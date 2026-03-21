@@ -15,11 +15,25 @@ export default function EndHandModal({
   isHost,
   onNewHand,
 }: EndHandModalProps) {
-  const winnerTeamLabel = result.winner === 0 ? 'Team A' : 'Team B';
-  const winnerColor = result.winner === 0 ? 'text-blue-300' : 'text-orange-300';
+  // Defensive null checks
+  const safeScore = score || [0, 0];
+  const safePlayers = players || [];
+  const safeResult = result || {
+    winner: 0 as 0 | 1,
+    team0Tricks: 0,
+    team1Tricks: 0,
+    team0Tens: 0,
+    team1Tens: 0,
+    isMendikot: false,
+    isWhitewash: false,
+    winnerNames: [],
+  };
 
-  const teamAPlayers = players.filter((p) => p.seat % 2 === 0).map((p) => p.name);
-  const teamBPlayers = players.filter((p) => p.seat % 2 === 1).map((p) => p.name);
+  const winnerTeamLabel = safeResult.winner === 0 ? 'Team A' : 'Team B';
+  const winnerColor = safeResult.winner === 0 ? 'text-blue-300' : 'text-orange-300';
+
+  const teamAPlayers = safePlayers.filter((p) => p.seat % 2 === 0).map((p) => p.name);
+  const teamBPlayers = safePlayers.filter((p) => p.seat % 2 === 1).map((p) => p.name);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -34,13 +48,13 @@ export default function EndHandModal({
         </h2>
 
         {/* Special announcement */}
-        {result.isWhitewash && (
+        {safeResult.isWhitewash && (
           <div className="bg-purple-900 border border-purple-500 rounded-xl px-4 py-2 mb-3 text-center">
             <p className="text-purple-200 text-2xl font-black tracking-widest">WHITEWASH!</p>
             <p className="text-purple-300 text-xs">All 13 tricks!</p>
           </div>
         )}
-        {!result.isWhitewash && result.isMendikot && (
+        {!safeResult.isWhitewash && safeResult.isMendikot && (
           <div className="bg-yellow-900 border border-yellow-500 rounded-xl px-4 py-2 mb-3 text-center">
             <p className="text-yellow-200 text-2xl font-black tracking-widest">MENDIKOT!</p>
             <p className="text-yellow-300 text-xs">All 4 tens captured!</p>
@@ -52,7 +66,7 @@ export default function EndHandModal({
           <p className="text-green-300 text-sm mb-1">Winner</p>
           <p className={`text-3xl font-black ${winnerColor}`}>{winnerTeamLabel} wins!</p>
           <p className="text-green-400 text-sm mt-1">
-            {result.winnerNames.join(' & ')}
+            {(safeResult.winnerNames || []).join(' & ')}
           </p>
         </div>
 
@@ -71,14 +85,14 @@ export default function EndHandModal({
               <tr className="text-blue-300">
                 <td className="font-bold py-0.5">Team A</td>
                 <td className="text-center text-xs text-green-400">{teamAPlayers.join(', ')}</td>
-                <td className="text-center font-bold">{result.team0Tricks}</td>
-                <td className="text-center font-bold">{result.team0Tens}</td>
+                <td className="text-center font-bold">{safeResult.team0Tricks}</td>
+                <td className="text-center font-bold">{safeResult.team0Tens}</td>
               </tr>
               <tr className="text-orange-300">
                 <td className="font-bold py-0.5">Team B</td>
                 <td className="text-center text-xs text-green-400">{teamBPlayers.join(', ')}</td>
-                <td className="text-center font-bold">{result.team1Tricks}</td>
-                <td className="text-center font-bold">{result.team1Tens}</td>
+                <td className="text-center font-bold">{safeResult.team1Tricks}</td>
+                <td className="text-center font-bold">{safeResult.team1Tens}</td>
               </tr>
             </tbody>
           </table>
@@ -89,13 +103,13 @@ export default function EndHandModal({
           <div className="text-center">
             <p className="text-green-500 text-xs mb-0.5">Overall Score</p>
             <p className="text-blue-300 font-bold text-lg">
-              Team A: <span className="text-white">{score[0]}</span>
+              Team A: <span className="text-white">{safeScore[0]}</span>
             </p>
           </div>
           <div className="text-center border-l border-green-700 pl-4">
             <p className="text-green-500 text-xs mb-0.5">&nbsp;</p>
             <p className="text-orange-300 font-bold text-lg">
-              Team B: <span className="text-white">{score[1]}</span>
+              Team B: <span className="text-white">{safeScore[1]}</span>
             </p>
           </div>
         </div>

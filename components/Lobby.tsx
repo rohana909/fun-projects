@@ -95,15 +95,15 @@ export default function Lobby({
             <div className="flex justify-around">
               <div className="text-center">
                 <p className="text-green-300 font-bold text-xs mb-1">TEAM A</p>
-                {teamA.map((p) => (
-                  <p key={p?.id} className="text-white text-xs">{p?.name ?? '—'}</p>
+                {teamA.filter(Boolean).map((p) => (
+                  <p key={p!.id} className="text-white text-xs">{p!.name}</p>
                 ))}
               </div>
               <div className="text-green-700 self-center text-lg font-bold">vs</div>
               <div className="text-center">
                 <p className="text-blue-300 font-bold text-xs mb-1">TEAM B</p>
-                {teamB.map((p) => (
-                  <p key={p?.id} className="text-white text-xs">{p?.name ?? '—'}</p>
+                {teamB.filter(Boolean).map((p) => (
+                  <p key={p!.id} className="text-white text-xs">{p!.name}</p>
                 ))}
               </div>
             </div>
