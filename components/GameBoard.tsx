@@ -119,16 +119,16 @@ export default function GameBoard({
   };
 
   return (
-    <div className="flex flex-col bg-felt min-h-screen">
+    <div className="flex flex-col bg-felt overflow-hidden" style={{ height: '100svh' }}>
       {/* YOUR TURN banner */}
       {isMyTurn && (
-        <div className="your-turn-banner flex items-center justify-center gap-2 py-2 bg-green-900 border-b-2 border-green-400">
+        <div className="your-turn-banner flex items-center justify-center gap-2 py-2 bg-green-900 border-b-2 border-green-400 flex-shrink-0">
           <span className="text-green-100 font-bold text-base tracking-widest uppercase">Your Turn</span>
         </div>
       )}
 
       {/* Turn / Trump indicator bar */}
-      <div className="flex items-center justify-center gap-3 py-1 bg-felt-dark border-b border-green-800 text-sm">
+      <div className="flex items-center justify-center gap-3 py-1 bg-felt-dark border-b border-green-800 text-sm flex-shrink-0">
         <span className="text-green-500">Trump:</span>
         {trumpSuit ? (
           <span className={`font-bold ${suitColor(trumpSuit)}`}>
@@ -146,9 +146,9 @@ export default function GameBoard({
       </div>
 
       {/* Main game area */}
-      <div className="flex flex-col">
+      <div className="flex flex-col flex-1 min-h-0">
         {/* Top player */}
-        <div className="flex justify-center pt-2 px-2">
+        <div className="flex justify-center pt-2 px-2 flex-shrink-0">
           <FaceDownHand
             count={getCardCount(topSeat)}
             name={getPlayerName(topSeat)}
@@ -158,7 +158,7 @@ export default function GameBoard({
         </div>
 
         {/* Middle row: left player, trick area, right player */}
-        <div className="flex items-center justify-between px-2 py-2">
+        <div className="flex items-center justify-between px-2 py-2 flex-1 min-h-0">
           {/* Left player */}
           <div className="flex-shrink-0">
             <FaceDownHand
@@ -194,7 +194,7 @@ export default function GameBoard({
         </div>
 
         {/* My hand at bottom */}
-        <div className="pb-1 px-1">
+        <div className="pb-1 px-1 flex-shrink-0 overflow-x-auto">
           <Hand
             cards={myCards}
             isMyTurn={isMyTurn}
@@ -207,18 +207,20 @@ export default function GameBoard({
       </div>
 
       {/* Sidebar / info bar */}
-      <Sidebar
-        players={players}
-        mySeat={mySeat}
-        currentTurn={currentTurn}
-        trumpSuit={trumpSuit}
-        trumpSetBySeat={trumpSetBySeat}
-        trickCount={trickCount}
-        tensCount={tensCount}
-        capturedTens={capturedTens ?? {}}
-        score={score}
-        dealer={dealer}
-      />
+      <div className="flex-shrink-0">
+        <Sidebar
+          players={players}
+          mySeat={mySeat}
+          currentTurn={currentTurn}
+          trumpSuit={trumpSuit}
+          trumpSetBySeat={trumpSetBySeat}
+          trickCount={trickCount}
+          tensCount={tensCount}
+          capturedTens={capturedTens ?? {}}
+          score={score}
+          dealer={dealer}
+        />
+      </div>
     </div>
   );
 }

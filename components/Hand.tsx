@@ -58,7 +58,7 @@ export default function Hand({ cards, isMyTurn, ledSuit, trumpSuit, onPlayCard, 
       )}
 
       {/* Cards */}
-      <div className="flex flex-row items-end justify-center flex-wrap gap-1 px-2 max-w-full overflow-x-auto" style={{ WebkitOverflowScrolling: 'touch' } as React.CSSProperties}>
+      <div className="flex flex-row items-end justify-start gap-1 px-2 w-full overflow-x-auto" style={{ WebkitOverflowScrolling: 'touch' } as React.CSSProperties}>
         {sortBySuit(cards).map((card, idx) => {
           const playable = isCardPlayable(card, cards, ledSuit, isMyTurn);
           return (
