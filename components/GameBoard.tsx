@@ -119,7 +119,7 @@ export default function GameBoard({
   };
 
   return (
-    <div className="flex flex-col h-full bg-felt overflow-hidden">
+    <div className="flex flex-col min-h-full bg-felt">
       {/* YOUR TURN banner */}
       {isMyTurn && (
         <div className="your-turn-banner flex items-center justify-center gap-2 py-2 bg-green-900 border-b-2 border-green-400">
@@ -146,7 +146,7 @@ export default function GameBoard({
       </div>
 
       {/* Main game area */}
-      <div className="flex-1 flex flex-col min-h-0">
+      <div className="flex flex-col">
         {/* Top player */}
         <div className="flex justify-center pt-2 px-2">
           <FaceDownHand
@@ -158,7 +158,7 @@ export default function GameBoard({
         </div>
 
         {/* Middle row: left player, trick area, right player */}
-        <div className="flex-1 flex items-center justify-between px-2 min-h-0">
+        <div className="flex items-center justify-between px-2 py-2">
           {/* Left player */}
           <div className="flex-shrink-0">
             <FaceDownHand
