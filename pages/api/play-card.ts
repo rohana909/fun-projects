@@ -116,7 +116,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   room.trickCount[winnerTeam]++;
 
   // Track each captured 10 by suit
-  if (!room.capturedTens) room.capturedTens = {};
+  if (!room.capturedTens) room.capturedTens = {} as Partial<Record<import('@/lib/gameLogic').Suit, 0 | 1>>;
   for (const tc of room.currentTrick) {
     if (tc.card.rank === '10') {
       room.capturedTens[tc.card.suit] = winnerTeam;

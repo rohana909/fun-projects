@@ -100,11 +100,19 @@ function playBotTurn(room: GameRoom): void {
 
   // Trick complete
   const winner = determineTrickWinner(room.currentTrick, room.ledSuit!, room.trumpSuit);
-  const trickTens = countTens(room.currentTrick);
   const winnerTeam = getTeam(winner);
 
   room.trickCount[winnerTeam]++;
-  room.tensCount[winnerTeam] += trickTens;
+
+  // Track captured tens by suit
+  if (!room.capturedTens) room.capturedTens = {};
+  for (const tc of room.currentTrick) {
+    if (tc.card.rank === '10') {
+      room.capturedTens[tc.card.suit] = winnerTeam;
+    }
+  }
+  room.tensCount[0] = Object.values(room.capturedTens).filter((t) => t === 0).length;
+  room.tensCount[1] = Object.values(room.capturedTens).filter((t) => t === 1).length;
 
   const completedTrick: CompletedTrick = { winner, cards: [...room.currentTrick] };
   room.completedTricks.push(completedTrick);
@@ -162,6 +170,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // Return sanitized state (without sensitive internal fields)
   return res.status(200).json({
     code: room.code,
+    hostId: room.hostId,
     players: room.players,
     status: room.status,
     hands: room.hands,
@@ -173,8 +182,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     currentTrick: room.currentTrick,
     trickCount: room.trickCount,
     tensCount: room.tensCount,
+    capturedTens: room.capturedTens || {},
     lastTrick: room.lastTrick,
     handResult: room.handResult,
     score: room.score,
+    seatAssignments: room.seatAssignments,
   });
 }
