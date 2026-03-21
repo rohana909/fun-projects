@@ -282,23 +282,6 @@ export default function RoomPage() {
     );
   }
 
-  // When hand completes, reset modal visibility so host can review the board first
-  // NOTE: This useEffect MUST be before any conditional returns (Rules of Hooks)
-  useEffect(() => {
-    if (!gameState) return;
-    if (prevStatus.current === 'playing' && gameState.status === 'hand_complete') {
-      setShowHandResult(false); // hide modal — let players see last trick first
-      // Non-hosts auto-reveal results after 4 seconds
-      if (!isHost) {
-        setTimeout(() => setShowHandResult(true), 4000);
-      }
-    }
-    if (gameState.status === 'playing') {
-      setShowHandResult(false);
-    }
-    prevStatus.current = gameState.status;
-  }, [gameState?.status, isHost]);
-
   // Lobby
   if (gameState.status === 'waiting') {
     return (
