@@ -83,28 +83,29 @@ export default function TrickArea({ currentTrick, lastTrick, mySeat, players, tr
         <CardSlot seat={rightSeat} position="right" />
         <CardSlot seat={bottomSeat} position="bottom" />
 
-        {/* Center: empty indicator or trick winner flash */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          {trickWinner ? (
-            <div className="absolute inset-0 bg-black/70 rounded-xl flex items-center justify-center z-10">
-              <div className="bg-gradient-to-br from-green-600 to-green-800 border-4 border-yellow-400 rounded-2xl px-4 py-3 text-center shadow-2xl flex flex-col items-center gap-2">
-                <div className="text-white text-2xl font-extrabold drop-shadow-lg">{trickWinner}</div>
-                <div className="text-yellow-300 text-lg font-bold">wins the trick!</div>
-                {isHost && (
-                  <button
-                    onClick={onDismissTrick}
-                    className="mt-1 px-5 py-1.5 bg-white text-green-800 font-bold rounded-lg text-sm hover:bg-yellow-100 active:scale-95 transition-transform shadow"
-                  >
-                    Next →
-                  </button>
-                )}
-              </div>
-            </div>
-          ) : safeTrick.length === 0 ? (
+        {/* Center: empty indicator only when no cards */}
+        {!trickWinner && safeTrick.length === 0 && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="w-8 h-8 rounded-full border border-green-700 opacity-20" />
-          ) : null}
-        </div>
+          </div>
+        )}
       </div>
+
+      {/* Winner banner — sits BELOW the cards, doesn't cover them */}
+      {trickWinner && (
+        <div className="flex items-center gap-2 bg-green-900 border border-yellow-400 rounded-xl px-3 py-1.5 shadow-lg">
+          <span className="text-white font-bold text-sm">{trickWinner}</span>
+          <span className="text-yellow-300 text-sm font-semibold">wins!</span>
+          {isHost && (
+            <button
+              onClick={onDismissTrick}
+              className="ml-1 px-3 py-0.5 bg-yellow-400 text-green-900 font-bold rounded-lg text-xs hover:bg-yellow-300 active:scale-95 transition-transform"
+            >
+              Next →
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
