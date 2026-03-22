@@ -146,9 +146,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(200).json({ success: true });
   }
 
-  // Not final trick: prepare for next trick
-  room.currentTrick = [];
-  room.ledSuit = null;
+  // Not final trick: freeze — wait for host to ack before clearing
+  room.trickPendingAck = true;
+  // currentTrick stays so all clients can see the 4 cards
+  // currentTurn is already the winner, set it so host ack knows who leads next
   room.currentTurn = winner;
 
   await saveRoom(room.code, room);

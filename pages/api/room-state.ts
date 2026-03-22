@@ -128,9 +128,8 @@ function playBotTurn(room: GameRoom): void {
     return;
   }
 
-  // Prepare next trick
-  room.currentTrick = [];
-  room.ledSuit = null;
+  // Freeze — wait for host to ack
+  room.trickPendingAck = true;
   room.currentTurn = winner;
 }
 
@@ -158,7 +157,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // Auto-play bots until it is the human's turn (or hand is over)
   if (room.status === 'playing') {
     let changed = false;
-    while (room.status === 'playing' && isBotSeat(room, room.currentTurn)) {
+    while (room.status === 'playing' && !room.trickPendingAck && isBotSeat(room, room.currentTurn)) {
       playBotTurn(room);
       changed = true;
     }
@@ -187,5 +186,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     handResult: room.handResult,
     score: room.score,
     seatAssignments: room.seatAssignments,
+    trickPendingAck: room.trickPendingAck || false,
   });
 }

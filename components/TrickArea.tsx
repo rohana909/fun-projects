@@ -9,11 +9,12 @@ interface TrickAreaProps {
   trumpSuit: Suit | null;
   ledSuit: Suit | null;
   trickWinner: string | null;
+  trickPendingAck?: boolean;
   isHost?: boolean;
   onDismissTrick?: () => void;
 }
 
-export default function TrickArea({ currentTrick, lastTrick, mySeat, players, trumpSuit, ledSuit, trickWinner, isHost, onDismissTrick }: TrickAreaProps) {
+export default function TrickArea({ currentTrick, lastTrick, mySeat, players, trumpSuit, ledSuit, trickWinner, trickPendingAck, isHost, onDismissTrick }: TrickAreaProps) {
   // Defensive: ensure currentTrick is always an array
   const safeTrick = currentTrick || [];
   // Show currentTrick cards; if empty (trick just completed), fall back to lastTrick for display
@@ -92,17 +93,23 @@ export default function TrickArea({ currentTrick, lastTrick, mySeat, players, tr
       </div>
 
       {/* Winner banner — sits BELOW the cards, doesn't cover them */}
-      {trickWinner && (
+      {trickPendingAck && (
         <div className="flex items-center gap-2 bg-green-900 border border-yellow-400 rounded-xl px-3 py-1.5 shadow-lg">
-          <span className="text-white font-bold text-sm">{trickWinner}</span>
-          <span className="text-yellow-300 text-sm font-semibold">wins!</span>
-          {isHost && (
+          {trickWinner && (
+            <>
+              <span className="text-white font-bold text-sm">{trickWinner}</span>
+              <span className="text-yellow-300 text-sm font-semibold">wins!</span>
+            </>
+          )}
+          {isHost ? (
             <button
               onClick={onDismissTrick}
-              className="ml-1 px-3 py-0.5 bg-yellow-400 text-green-900 font-bold rounded-lg text-xs hover:bg-yellow-300 active:scale-95 transition-transform"
+              className="ml-1 px-3 py-1 bg-yellow-400 text-green-900 font-bold rounded-lg text-sm hover:bg-yellow-300 active:scale-95 transition-transform"
             >
               Next →
             </button>
+          ) : (
+            <span className="text-green-400 text-xs italic">Waiting for host...</span>
           )}
         </div>
       )}

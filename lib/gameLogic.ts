@@ -55,6 +55,7 @@ export interface GameRoom {
   hostId: string;
   players: Player[];
   status: GameStatus;
+  trickPendingAck?: boolean; // true after trick completes, waiting for host to advance
 
   hands: Record<number, Card[]>; // seat -> remaining cards
   dealer: number; // seat of current dealer

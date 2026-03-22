@@ -21,6 +21,7 @@ export interface RoomState {
   trickCount: [number, number];
   tensCount: [number, number];
   capturedTens: Partial<Record<Suit, 0 | 1>>;
+  trickPendingAck: boolean;
   lastTrick: CompletedTrick | null;
   handResult: HandResult | null;
   score: [number, number];
@@ -186,6 +187,7 @@ export default function GameBoard({
               trumpSuit={trumpSuit}
               ledSuit={ledSuit}
               trickWinner={trickWinner}
+              trickPendingAck={gameState.trickPendingAck || false}
               isHost={isHost}
               onDismissTrick={handleDismissTrick}
             />

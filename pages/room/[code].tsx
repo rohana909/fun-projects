@@ -150,6 +150,15 @@ export default function RoomPage() {
     }
   };
 
+  const handleAckTrick = async () => {
+    if (!code || !playerInfo) return;
+    await fetch('/api/ack-trick', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code, playerId: playerInfo.playerId }),
+    });
+  };
+
   const handleNewHand = async () => {
     if (!code || !playerInfo) return;
     const res = await fetch('/api/new-hand', {
@@ -314,7 +323,7 @@ export default function RoomPage() {
         onNewHand={handleNewHand}
         isHost={isHost}
         lastError={lastError}
-        onDismissTrick={() => {/* host dismissed trick overlay */}}
+        onDismissTrick={handleAckTrick}
       />
 
       {/* Host "Hand Done" banner — shown when hand is complete, before result modal */}
