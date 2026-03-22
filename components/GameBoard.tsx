@@ -35,6 +35,7 @@ interface GameBoardProps {
   onNewHand: () => void;
   isHost: boolean;
   lastError: string | null;
+  onDismissTrick?: () => void;
 }
 
 function FaceDownHand({ count, name, isCurrentTurn, isMe }: { count: number; name: string; seat: number; isCurrentTurn: boolean; isMe?: boolean }) {
@@ -68,6 +69,7 @@ export default function GameBoard({
   onNewHand,
   isHost,
   lastError,
+  onDismissTrick,
 }: GameBoardProps) {
   // Destructure with defensive defaults for all potentially null/undefined values
   const players = gameState.players || [];
@@ -102,10 +104,16 @@ export default function GameBoard({
       const winnerName = getPlayerName(gameState.lastTrick.winner);
       setTrickWinner(winnerName);
       prevTrickTotal.current = total;
+      // Auto-dismiss after 2.5s (host can also dismiss manually)
       const timer = setTimeout(() => setTrickWinner(null), 2500);
       return () => clearTimeout(timer);
     }
   }, [trickCount, gameState.lastTrick]);
+
+  const handleDismissTrick = () => {
+    setTrickWinner(null);
+    onDismissTrick?.();
+  };
 
   // Other players relative to me
   const leftSeat = (mySeat + 1) % 4;
@@ -178,6 +186,8 @@ export default function GameBoard({
               trumpSuit={trumpSuit}
               ledSuit={ledSuit}
               trickWinner={trickWinner}
+              isHost={isHost}
+              onDismissTrick={handleDismissTrick}
             />
           </div>
 

@@ -9,9 +9,11 @@ interface TrickAreaProps {
   trumpSuit: Suit | null;
   ledSuit: Suit | null;
   trickWinner: string | null;
+  isHost?: boolean;
+  onDismissTrick?: () => void;
 }
 
-export default function TrickArea({ currentTrick, lastTrick, mySeat, players, trumpSuit, ledSuit, trickWinner }: TrickAreaProps) {
+export default function TrickArea({ currentTrick, lastTrick, mySeat, players, trumpSuit, ledSuit, trickWinner, isHost, onDismissTrick }: TrickAreaProps) {
   // Defensive: ensure currentTrick is always an array
   const safeTrick = currentTrick || [];
   // Show currentTrick cards; if empty (trick just completed), fall back to lastTrick for display
@@ -85,9 +87,17 @@ export default function TrickArea({ currentTrick, lastTrick, mySeat, players, tr
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           {trickWinner ? (
             <div className="absolute inset-0 bg-black/70 rounded-xl flex items-center justify-center z-10">
-              <div className="bg-gradient-to-br from-green-600 to-green-800 border-4 border-yellow-400 rounded-2xl px-6 py-4 text-center shadow-2xl transform scale-100 animate-bounce">
+              <div className="bg-gradient-to-br from-green-600 to-green-800 border-4 border-yellow-400 rounded-2xl px-4 py-3 text-center shadow-2xl flex flex-col items-center gap-2">
                 <div className="text-white text-2xl font-extrabold drop-shadow-lg">{trickWinner}</div>
-                <div className="text-yellow-300 text-xl font-bold">wins the trick!</div>
+                <div className="text-yellow-300 text-lg font-bold">wins the trick!</div>
+                {isHost && (
+                  <button
+                    onClick={onDismissTrick}
+                    className="mt-1 px-5 py-1.5 bg-white text-green-800 font-bold rounded-lg text-sm hover:bg-yellow-100 active:scale-95 transition-transform shadow"
+                  >
+                    Next →
+                  </button>
+                )}
               </div>
             </div>
           ) : safeTrick.length === 0 ? (

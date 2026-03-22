@@ -314,6 +314,7 @@ export default function RoomPage() {
         onNewHand={handleNewHand}
         isHost={isHost}
         lastError={lastError}
+        onDismissTrick={() => {/* host dismissed trick overlay */}}
       />
 
       {/* Host "Hand Done" banner — shown when hand is complete, before result modal */}
