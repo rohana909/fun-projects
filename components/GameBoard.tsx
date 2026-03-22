@@ -39,7 +39,7 @@ interface GameBoardProps {
 
 function FaceDownHand({ count, name, isCurrentTurn, isMe }: { count: number; name: string; seat: number; isCurrentTurn: boolean; isMe?: boolean }) {
   return (
-    <div className={`flex flex-col items-center gap-1 rounded-lg p-1 transition-all ${isCurrentTurn ? 'glow-pulse ring-2 ring-green-400' : ''}`}>
+    <div className={`flex flex-col items-center gap-1 rounded-lg p-1 transition-all ${isCurrentTurn ? 'ring-2 ring-green-400' : ''}`}>
       <span className={`text-xs font-medium ${isCurrentTurn ? 'text-green-300' : isMe ? 'text-yellow-300' : 'text-green-400'}`}>
         {name} {isCurrentTurn ? '▶' : ''}
       </span>
@@ -102,7 +102,7 @@ export default function GameBoard({
       const winnerName = getPlayerName(gameState.lastTrick.winner);
       setTrickWinner(winnerName);
       prevTrickTotal.current = total;
-      const timer = setTimeout(() => setTrickWinner(null), 2000);
+      const timer = setTimeout(() => setTrickWinner(null), 2500);
       return () => clearTimeout(timer);
     }
   }, [trickCount, gameState.lastTrick]);

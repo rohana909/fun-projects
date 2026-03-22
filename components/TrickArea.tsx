@@ -84,9 +84,11 @@ export default function TrickArea({ currentTrick, lastTrick, mySeat, players, tr
         {/* Center: empty indicator or trick winner flash */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           {trickWinner ? (
-            <div className="bg-green-900/90 border border-green-400 rounded-lg px-2 py-1 text-center shadow-lg">
-              <div className="text-green-200 text-xs font-bold leading-tight">{trickWinner}</div>
-              <div className="text-green-400 text-xs leading-tight">wins!</div>
+            <div className="absolute inset-0 bg-black/70 rounded-xl flex items-center justify-center z-10">
+              <div className="bg-gradient-to-br from-green-600 to-green-800 border-4 border-yellow-400 rounded-2xl px-6 py-4 text-center shadow-2xl transform scale-100 animate-bounce">
+                <div className="text-white text-2xl font-extrabold drop-shadow-lg">{trickWinner}</div>
+                <div className="text-yellow-300 text-xl font-bold">wins the trick!</div>
+              </div>
             </div>
           ) : safeTrick.length === 0 ? (
             <div className="w-8 h-8 rounded-full border border-green-700 opacity-20" />

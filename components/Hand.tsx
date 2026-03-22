@@ -55,7 +55,7 @@ export default function Hand({ cards, isMyTurn, ledSuit, trumpSuit, onPlayCard, 
 
       {/* Turn indicator */}
       {isMyTurn && (
-        <div className="text-green-300 text-sm font-semibold animate-pulse">
+        <div className="text-green-300 text-sm font-semibold">
           Your turn — tap a card to play
         </div>
       )}
